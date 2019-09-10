@@ -9,7 +9,7 @@ module.exports.connect = () => {
     const host = process.env.MONGO_DB_HOST;
     const port = process.env.MONGO_DB_PORT;
 
-    mongoose.connect(`mongodb://${user}:${password}@${host}:${port}/myhomenew`, {
+    mongoose.connect(`mongodb://${user}:${password}@ds161539.mlab.com:61539/shashihome`, {
         useNewUrlParser: true,
         autoIndex: false
     })
