@@ -9,6 +9,7 @@ const morgan = require('morgan');
 const routes = require('./routes');
 const DB = require('./libs/db');
 const OAuthModel = require('./models/oAuth');
+const PORT = process.env.PORT || 8090;
 
 const app = express();
 app.oAuth = new OAuthServer({
@@ -47,4 +48,4 @@ routes.setupRoutes(app);
 
 DB.connect();
 
-app.listen(8090);
+app.listen(PORT);
