@@ -5,7 +5,7 @@ const Bluebird = require('bluebird');
 const request = Bluebird.promisify(require('request'));
 const dnssd = require('./dnssd');
 
-const IGNORED_KEYS = ['_id', '__v'];
+const IGNORED_KEYS = ['__v'];
 const schemaTransformer = module.exports.schemaTransformer = (doc, ret) => {
     return _omit(ret, IGNORED_KEYS);
 };

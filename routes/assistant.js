@@ -7,10 +7,17 @@ const {
   revokeToken
 } = require('../models/oAuth');
 
+function oAuthAuthenticate(req, res, next) {
+  if(req.isAuthenticated()) {
+    return next();
+  }
+  return req.app.oAuth.authenticate()(req, res, next);
+}
+
 module.exports =  app => {
-  app.post('/assistant/fullfill', app.oAuth.authenticate(), (req, res) => {
+  app.post('/assistant/fullfill', oAuthAuthenticate, (req, res) => {
     console.log('Assistant req', JSON.stringify(req.body, null, 2));
-    console.log('user', _get(res, 'locals.oauth.token.user.email'));
+    console.log('user', _get(res, 'locals.oauth.token.user.email'), _get(req, 'user.email'));
     
     const type = _get(req.body, 'inputs[0].intent');
 

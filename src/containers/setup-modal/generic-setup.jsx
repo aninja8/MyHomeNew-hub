@@ -29,6 +29,10 @@ export default function(props) {
   return (
     <React.Fragment>
       <p style={{ 'margin-top': '1rem', 'margin-bottom': 0 }}>Device type: Generic switch board</p>
+      <Form.Label style={{
+        'margin-top': '1rem'
+      }}>Room</Form.Label>
+      <Form.Control name="room" placeholder="which room is this device in?" onChange={props.updateValue} />
       <Form.Label style={formFieldsStyle}>Device label</Form.Label>
       <Form.Control 
         as="input"
@@ -53,7 +57,7 @@ export default function(props) {
                 <Row>
                   <Col>
                     <Form.Control as="select" name="type" onChange={onLeadUpdate}>
-                      <option value="switch">Others / unknown</option>
+                      <option value="switch">Generic switch</option>
                       <option value="tv">Television</option>
                       <option value="light">Light</option>
                       <option value="fan">Fan</option>

@@ -18,7 +18,7 @@ passport.use(new LocalStrategy(
         }
 
         return compare(password, user.password)
-          .then(res => done(null, (res ? _pick(user.toJSON(), ['email', 'name']) : false)))
+          .then(res => done(null, (res ? _pick(user.toJSON(), ['_id', 'email', 'name']) : false)))
       })
       .catch(done);
   }
@@ -30,7 +30,7 @@ passport.serializeUser(function(user, done) {
 
 passport.deserializeUser(function(email, done) {
   UserModel.findOne({ email })
-    .then(user => done(null, _pick(user.toJSON(), ['email', 'name'])))
+    .then(user => done(null, _pick(user.toJSON(), ['_id', 'email', 'name'])))
     .catch(done);
 });
 
