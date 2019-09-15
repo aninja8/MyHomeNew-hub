@@ -9,6 +9,7 @@ const DeviceInteractionUnitSchema = new Schema({
     devId: Number,
     label: String,
     state: String,
+    type: String,
     hasPwm: Boolean
 }, transformer);
 

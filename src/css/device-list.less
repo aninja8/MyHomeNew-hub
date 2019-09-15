@@ -1,13 +1,27 @@
 .acitivtyDot {
-    display: inline-block;
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    margin-left: 15px;
-    background-color: darkgray;
-    vertical-align: middle;
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  margin-left: 15px;
+  background-color: darkgray;
+  vertical-align: middle;
 
-    &.active {
-        background-color: darkgreen;
-    }
+  &.active {
+    background-color: darkgreen;
+  }
+}
+
+.device-row {
+  margin-bottom: 15px;
+}
+
+.device-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  label {
+    margin: 0;
+  }
 }

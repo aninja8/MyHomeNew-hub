@@ -1,18 +1,44 @@
 'use strict';
-
-const Bluebird = require('bluebird');
+const _get = require('lodash/get');
+const _omit = require('lodash/omit');
 const _pickBy = require('lodash/pickBy');
 
 const dnssd = require('../libs/dnssd');
 const DeviceModel = require('../models/devices');
-const { getRequestToDevice } = require('../libs/helpers');
+const { getRequestToDevice, series } = require('../libs/helpers');
 const schemaTransformer = require('../libs/helpers').schemaTransformer.bind(null, null);
 
 module.exports.getAvailableDevices = (req, res) => {
-  res.json(dnssd.getKnownDevices());
+  const allDevices = dnssd.getKnownDevices();
+  Promise.all(
+    Object.keys(allDevices).map(dev => 
+      DeviceModel.findOne({name: dev})
+        .then(added => ({dev, added: !!added}))
+        .catch(() => ({dev, added: false}))
+    )
+  )
+    .then(deviceInfo => 
+      res.json(
+        _omit(allDevices, deviceInfo
+          .filter(i => i.added === true)
+          .map(i => i.dev)
+        )
+      )
+    )
+    .catch(err => {
+      console.error('check device free failed', err.stack || err);
+      res.json({});
+    });
 };
 
 module.exports.saveNewDeviceForUser = (req, res) => {
+  if(dnssd.getKnownDevices()[_get(req, 'body.name')] === undefined) {
+    return res.json({
+      success: false,
+      err: 'Device not online'
+    });
+  }
+
   return DeviceModel.create({
     user: req.user.email,
     ...req.body
@@ -33,7 +59,9 @@ function mapBrightness(devConfig, lead) {
   }
 }
 
-module.exports.getDevState = async device => {
+const RETRY_ERR_CODES = ['EHOSTUNREACH', 'ENOTFOUND'];
+;
+module.exports.getDevState = async (device, retries = 2) => {
   return getRequestToDevice(device.name, device.port || '80', '/v1/config')
     .then(resp => ({
       ...device,
@@ -41,6 +69,15 @@ module.exports.getDevState = async device => {
       leads: device.leads.map(schemaTransformer).map(mapBrightness.bind(null, resp))
     }))
     .catch(err => {
+      retries--;
+      if(RETRY_ERR_CODES.includes(err.code) && // Err requires retry
+        retries !== 0 && // We have more retries left
+        dnssd.getKnownDevices()[device.name]) // And the device said it is online
+      {
+        console.warn('retrying bcz of', err.code);
+        return module.exports.getDevState(device, retries);
+      }
+
       console.error('getDevState failed', err);
       return {
         ...device,
@@ -52,7 +89,7 @@ module.exports.getDevState = async device => {
 module.exports.getAllDevicesForUser = (req, res) => {
   // Get list of devices for current user
   return DeviceModel.find({user: req.user.email}).lean()
-    .then(devices => Promise.all(devices.map(schemaTransformer).map(getDevState)))
+    .then(devices => series(devices.map(schemaTransformer), module.exports.getDevState))
     .then(devices => res.json(devices))
     .catch(err => res.json({
       sucess: false, 

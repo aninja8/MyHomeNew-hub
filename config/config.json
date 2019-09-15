@@ -1,0 +1,11 @@
+{
+  "MONGO_DB_USER": "LOCAL DATABASE USERNAME",
+  "MONGO_DB_PASS": "LOCAL DATABASE PASSWORD",
+  "MONGO_DB_HOST": "LOCAL DATABASE URL",
+  "external_server": "wss://home.applyed.in/wss/",
+  "hub_credentials": {
+    "id": "HUB CLIENT ID",
+    "secret": "HUB CLIENT SECRET",
+    "hub_user_email": "LOCAL DEFAULT USER'S EMAIL"
+  }
+}

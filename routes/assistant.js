@@ -3,6 +3,9 @@ const _get = require('lodash/get');
 const {
   syncDevices, queryStatus, execute
 } = require('../controllers/assistant');
+const {
+  revokeToken
+} = require('../models/oAuth');
 
 module.exports =  app => {
   app.post('/assistant/fullfill', app.oAuth.authenticate(), (req, res) => {
@@ -21,6 +24,12 @@ module.exports =  app => {
 
     if(type === 'action.devices.EXECUTE') {
       return execute(req, res);
+    }
+
+    if(type === 'action.devices.DISCONNECT') {
+      return revokeToken(_get(res, 'locals.oauth.token.refreshToken'))
+        .catch(err => {console.error('could not revoke refresh token', err)})
+        .then(() => res.send({}));
     }
 
     // Invalid request

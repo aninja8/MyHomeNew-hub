@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Authorize</title>
+    <title>Login to authorize</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://unpkg.com/bootstrap@4.1.0/dist/css/bootstrap.min.css" crossorigin="anonymous" />
-    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
   </head>
   <body>
-    <form id="login-form" style="width: 350px; margin: 50px auto">
-      <div id="msg"></div>
-      <input type="text" class="form-control" name="username" placeholder="Email" />
-      <input type="password" class="form-control" name="password" placeholder="Password" />
-      <button type="submit" class="btn btn-primary">Login</button>
-      <input type="hidden" id="redirectTo" value="{redirectTo}" />
-    </form>
+    <div class="container">
+      <h4 class="form-group">Please login to authorize your assistant to control your devices.</h4>
+      <form id="login-form" style="text-align: center">
+        <div id="msg" class="form-group"></div>
+        <input type="text" class="form-control form-group" name="username" placeholder="Email" />
+        <input type="password" class="form-control form-group" name="password" placeholder="Password" />
+        <button type="submit" class="btn btn-primary">Login</button>
+        <input type="hidden" id="redirectTo" value="{redirectTo}" />
+      </form>
+    </div>
     <script type="text/javascript">
-    console.log('here');
       var form = document.getElementById('login-form');
       form.onsubmit = function(e) {
         e.preventDefault();

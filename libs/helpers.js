@@ -33,3 +33,19 @@ module.exports.getRequestToDevice = (devName, devPort, url) => {
             }
         });
 };
+
+module.exports.series = (arr, mapper, others = []) => {
+  const firstElem = arr.shift();
+  if(!firstElem) {
+    return Promise.resolve([]);
+  }
+
+  const elemP = mapper(firstElem);
+  return elemP.then((thisResp) => {
+    const allResps = [...others, thisResp];
+    if(arr.length > 0) {
+      return module.exports.series(arr, mapper, allResps)
+    }
+    return allResps;
+  });
+};
